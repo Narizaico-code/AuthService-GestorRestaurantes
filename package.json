@@ -1,5 +1,5 @@
 {
-  "name": "auth-node",
+  "name": "GestorRestaurantes",
   "version": "1.0.0",
   "description": "API REST de autenticación robusta con Node.js y PostgreSQL",
   "main": "index.js",
