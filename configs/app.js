@@ -37,7 +37,7 @@ const routes = (app) => {
     res.status(200).json({
       status: 'Healthy',
       timestamp: new Date().toISOString(),
-      service: 'KinalSports Authentication Service',
+      service: 'Gestor Restaurantes Authentication Service',
     });
   });
   // 404 handler (standardized)
@@ -60,7 +60,7 @@ export const initServer = async () => {
     app.use(errorHandler);
 
     app.listen(PORT, () => {
-      console.log(`GestorBancario Auth Server running on port ${PORT}`);
+      console.log(`Gestor Restaurantes Auth Server running on port ${PORT}`);
       console.log(`Revisar estado: http://localhost:${PORT}${BASE_PATH}/health`);
     });
   } catch (err) {

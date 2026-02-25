@@ -3,14 +3,14 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16
-    container_name: gestor
+    container_name: gestorRestaurantes
     restart: unless-stopped
     environment:
-      POSTGRES_DB: gestorBancarioDb
+      POSTGRES_DB: gestorRestaurantesDb
       POSTGRES_USER: root
       POSTGRES_PASSWORD: admin
     ports:
-      - "5435:5432"
+      - "5438:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

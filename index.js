@@ -8,10 +8,10 @@ import { seedData } from './helpers/data-seeder.js';
 // Configurar variables de entorno
 dotenv.config();
 
-await seedData();
-
 await sequelize.authenticate();
 await sequelize.sync({ alter: true });
+
+await seedData();
 
 // Manejar errores no capturados
 process.on('uncaughtException', (err) => {
