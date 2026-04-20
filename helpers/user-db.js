@@ -5,7 +5,10 @@ import {
   UserPasswordReset,
 } from '../src/users/user.model.js';
 import { UserRole, Role } from '../src/auth/role.model.js';
-import { USER_ROLE } from './role-constants.js';
+import {
+  USER_ROLE,
+  ADMIN_RESTAURANT_ROLE,
+} from './role-constants.js';
 import { hashPassword } from '../utils/password-utils.js';
 import { Op } from 'sequelize';
 
@@ -127,7 +130,7 @@ export const createNewUser = async (userData) => {
       { transaction }
     );
 
-    // Asignar rol USER_ROLE por defecto (matching .NET DataSeeder)
+    // Asignar rol USER_ROLE por defecto
     const userRole = await Role.findOne(
       { where: { Name: USER_ROLE } },
       { transaction }
@@ -357,5 +360,98 @@ export const updateUserPassword = async (userId, hashedPassword) => {
     await transaction.rollback();
     console.error('Error actualizando contraseña:', error);
     throw new Error('Error al actualizar contraseña');
+  }
+};
+
+export const createAdminRestaurantUser = async (userData) => {
+  const transaction = await User.sequelize.transaction();
+
+  try {
+    const { name, email, password, phone, profilePicture } = userData;
+
+    const existingUser = await User.findOne({
+      where: { Email: email.toLowerCase() },
+      transaction,
+    });
+
+    if (existingUser) {
+      const err = new Error('Ya existe un usuario con este email');
+      err.status = 409;
+      throw err;
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    const user = await User.create(
+      {
+        Name: name,
+        Email: email.toLowerCase(),
+        Password: hashedPassword,
+        IsActive: true,
+      },
+      { transaction }
+    );
+
+    const { getDefaultAvatarPath } = await import('./cloudinary-service.js');
+    const defaultAvatarFilename = getDefaultAvatarPath();
+
+    await UserProfile.create(
+      {
+        UserId: user.Id,
+        Phone: phone,
+        Imagen: profilePicture || defaultAvatarFilename,
+      },
+      { transaction }
+    );
+
+    await UserEmail.create(
+      {
+        UserId: user.Id,
+        EmailVerified: true,
+        EmailVerificationToken: null,
+        EmailVerificationTokenExpiry: null,
+      },
+      { transaction }
+    );
+
+    await UserPasswordReset.create(
+      {
+        UserId: user.Id,
+      },
+      { transaction }
+    );
+
+    const role = await Role.findOne(
+      { where: { Name: ADMIN_RESTAURANT_ROLE } },
+      { transaction }
+    );
+
+    if (!role) {
+      const err = new Error(
+        'El rol ADMIN_RESTAURANT no existe en la base de datos'
+      );
+      err.status = 500;
+      throw err;
+    }
+
+    await UserRole.create(
+      {
+        UserId: user.Id,
+        RoleId: role.Id,
+      },
+      { transaction }
+    );
+
+    await transaction.commit();
+
+    return findUserById(user.Id);
+  } catch (error) {
+    await transaction.rollback();
+    if (!error.status) {
+      console.error('Error creando ADMIN_RESTAURANT:', error);
+      error.status = 500;
+      error.message = 'Error al crear administrador de restaurante';
+    }
+    throw error;
   }
 };

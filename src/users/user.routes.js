@@ -3,6 +3,7 @@ import {
   updateUserRole,
   getUserRoles,
   getUsersByRole,
+  createAdminRestaurant,
 } from './user.controller.js';
 
 import { validateJWT } from '../../middlewares/validate-JWT.js';
@@ -13,6 +14,9 @@ import { UserRole, Role } from '../auth/role.model.js';
 import { ADMIN_ROLE } from '../../helpers/role-constants.js';
 
 const router = Router();
+
+// POST /api/v1/users/admin-restaurant
+router.post('/admin-restaurant', ...createAdminRestaurant);
 
 // PUT /api/v1/users/:userId/role
 router.put('/:userId/role', ...updateUserRole);

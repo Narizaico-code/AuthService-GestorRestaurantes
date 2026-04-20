@@ -1,7 +1,7 @@
 {
-  "name": "GestorRestaurantes",
+  "name": "Auth_COPEREX",
   "version": "1.0.0",
-  "description": "API REST de autenticación robusta con Node.js y PostgreSQL",
+  "description": "API REST de autenticación (solo ADMIN_ROLE) para COPEREX",
   "main": "index.js",
   "type": "module",
   "scripts": {

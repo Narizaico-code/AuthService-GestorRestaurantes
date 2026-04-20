@@ -123,3 +123,45 @@ export const validateResetPassword = [
 
   handleValidationErrors,
 ];
+
+/**
+ * Validaciones para crear ADMIN_RESTAURANT
+ */
+export const validateCreateAdminRestaurant = [
+  body('name')
+    .trim()
+    .notEmpty()
+    .withMessage('El nombre es obligatorio')
+    .isLength({ max: 100 })
+    .withMessage('El nombre no puede exceder 100 caracteres')
+    .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+    .withMessage('El nombre solo puede contener letras y espacios'),
+
+  body('email')
+    .trim()
+    .notEmpty()
+    .withMessage('El correo electrónico es obligatorio')
+    .isEmail()
+    .withMessage('El correo electrónico no tiene un formato válido')
+    .isLength({ max: 150 })
+    .withMessage('El correo electrónico no puede tener más de 150 caracteres'),
+
+  body('password')
+    .notEmpty()
+    .withMessage('La contraseña es obligatoria')
+    .isLength({ min: 8, max: 255 })
+    .withMessage('La contraseña debe tener entre 8 y 255 caracteres'),
+
+  body('phone')
+    .notEmpty()
+    .withMessage('El número de teléfono es obligatorio')
+    .matches(/^\d{8}$/)
+    .withMessage('El número de teléfono debe tener exactamente 8 dígitos'),
+
+  body('profilePicture')
+    .optional({ nullable: true })
+    .isString()
+    .withMessage('La imagen de perfil debe ser texto (ruta o nombre de archivo)'),
+
+  handleValidationErrors,
+];

@@ -1,13 +1,17 @@
 import { Role } from '../src/auth/role.model.js';
 import { User, UserProfile, UserEmail } from '../src/users/user.model.js';
 import { UserRole } from '../src/auth/role.model.js';
-import { USER_ROLE, ADMIN_ROLE } from './role-constants.js';
+import {
+  USER_ROLE,
+  ADMIN_ROLE,
+  ADMIN_RESTAURANT_ROLE,
+} from './role-constants.js';
 import { generateUserId } from './uuid-generator.js';
 import { hashPassword } from '../utils/password-utils.js';
 
 export const seedData = async () => {
   // Crear roles si no existen
-  const roles = [ADMIN_ROLE, USER_ROLE];
+  const roles = [ADMIN_ROLE, USER_ROLE, ADMIN_RESTAURANT_ROLE];
   for (const name of roles) {
     await Role.findOrCreate({
       where: { Name: name },
